@@ -1,10 +1,10 @@
 ﻿using SlotGame.Enums;
 
-namespace SlotGame;
+namespace SlotGame.Domain.Models;
 
 public class GameHistory
 {
-    public int PlayerId { get; set; }
+    public Guid PlayerId { get; set; }
 
     public decimal BetAmount { get; set; }
 
