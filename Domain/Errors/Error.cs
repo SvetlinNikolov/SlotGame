@@ -1,8 +1,8 @@
 ﻿namespace SlotGame.Domain.Errors;
 
-public class Error : Exception
+public class Error
 {
-    public new string Message { get; }
+    public string Message { get; }
 
     public Error(string message)
     {

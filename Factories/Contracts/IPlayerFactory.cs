@@ -1,8 +1,9 @@
-﻿using SlotGame.Domain.Result;
+﻿using SlotGame.Domain.Models;
+using SlotGame.Domain.Result;
 
 namespace SlotGame.Factories.Contracts;
 
 public interface IPlayerFactory
 {
-    Result CreatePlayer();
+    Player CreatePlayer();
 }

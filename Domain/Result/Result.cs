@@ -5,6 +5,7 @@ namespace SlotGame.Domain.Result;
 public class Result
 {
     public bool IsSuccess { get; init; }
+    public bool IsFailure => !IsSuccess;
     public Error? Error { get; init; }
     public object? Data { get; init; }
 
@@ -27,7 +28,7 @@ public class Result
 
     public static Result Failure(Error error)
     {
-        return new Result(isSuccess : false, data: null, error);
+        return new Result(isSuccess: false, data: null, error);
     }
 
     public T GetData<T>()

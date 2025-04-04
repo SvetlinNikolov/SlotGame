@@ -1,18 +1,17 @@
 ﻿using SlotGame.Domain.Models;
-using SlotGame.Domain.Result;
 using SlotGame.Factories.Contracts;
 
 namespace SlotGame.Factories;
 
 public class PlayerFactory : IPlayerFactory
 {
-    public Result CreatePlayer()
+    public Player CreatePlayer()
     {
         var player = new Player
         {
             Id = Guid.NewGuid()
         };
 
-        return Result.Success(player);
+        return player;
     }
 }

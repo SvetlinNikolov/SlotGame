@@ -11,10 +11,10 @@ namespace SlotGame.Factories
 
         public Result CreateWallet(Guid playerId)
         {
-            // Prevent the player from having more that 1 wallet. If more than 1 wallet is neede we can always remove this check.
+            // Prevent the player from having more that 1 wallet. If more than 1 wallet is needed we can always remove this check.
             if (_walletsByPlayerId.ContainsKey(playerId))
             {
-                return Result.Failure(SlotGameErrors.DuplicatePlayerWalletError(playerId));
+                return Result.Failure(SlotGameErrors.DuplicateWallet(playerId));
             }
 
             var wallet = new Wallet(playerId);
