@@ -6,7 +6,7 @@ public static class SlotMachineRulesValidator
 {
     public static void ValidateGamePercentages()
     {
-        int total = GamePercentageConfig.GamePercentages.Values.Sum();
+        int total = GamePercentageConfig.GamePercentages.Select(x => x.percent).Sum();
 
         if (total != GlobalConstants.TotalPercent)
         {

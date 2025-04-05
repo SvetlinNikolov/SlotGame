@@ -4,18 +4,18 @@ namespace SlotGame.Domain.Models;
 
 public class SpinResult
 {
-    public SpinResult(SpinOutcome spinOutcome, decimal baseWin, decimal multiplier)
+    public SpinResult(SpinOutcome spinOutcome, decimal betAmount, decimal multiplier)
     {
         SpinOutcome = spinOutcome;
-        BaseWin = baseWin;
+        BetAmount = betAmount;
         Multiplier = multiplier;
     }
 
     public SpinOutcome SpinOutcome { get; }
 
-    public decimal BaseWin { get; }
+    public decimal BetAmount { get; }
 
     public decimal Multiplier { get; }
 
-    public decimal TotalWin => BaseWin * Multiplier;
+    public decimal TotalWin => BetAmount * Multiplier;
 }

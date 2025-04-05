@@ -18,6 +18,11 @@ public class SpinResultService : ISpinResultService
 
     public Result GetSpinResult(decimal betAmount)
     {
+        if (betAmount < GlobalConstants.MinBet || betAmount > GlobalConstants.MaxBet)
+        {
+            return Result.Failure(SlotGameErrors.BetAmountNotInValidRange());
+        }
+
         var spinOutcomeResult = CalculateSpinOutcome();
         if (spinOutcomeResult.IsFailure)
         {
