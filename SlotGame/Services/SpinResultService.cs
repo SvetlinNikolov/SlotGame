@@ -38,7 +38,7 @@ public class SpinResultService(IRandomService randomService) : ISpinResultServic
 
     private Result CalculateSpinOutcome()
     {
-        var roll = randomService.GetRandomDecimal(1, BetConstants.TotalPercent);
+        var roll = randomService.GetRandomInt(1, BetConstants.TotalPercent);
         int cumulative = 0;
 
         foreach (var (outcome, percent) in GamePercentageConfig.GamePercentages)

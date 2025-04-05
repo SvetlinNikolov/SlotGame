@@ -59,7 +59,7 @@ public class SpinResultServiceTests
     public void GetSpinResult_ShouldReturnFailure_WhenRollIsOutsideRange()
     {
         // Arange
-        _randomService.GetRandomDecimal(1, BetConstants.TotalPercent)
+        _randomService.GetRandomInt(1, BetConstants.TotalPercent)
             .Returns(BetConstants.TotalPercent + 1); // invalid roll
 
         // Act

@@ -78,7 +78,7 @@ public class GameServiceTests
         ]);
 
         _consoleService.ReadLine().Returns(_ => inputs.Dequeue());
-        _randomService.GetRandomDecimal(1, BetConstants.TotalPercent).Returns(BetConstants.WinChancePercent);
+        _randomService.GetRandomInt(1, BetConstants.TotalPercent).Returns(BetConstants.WinChancePercent);
         _randomService.GetRandomDecimal(BetConstants.BigWinMinMultiplier, BetConstants.BigWinMaxMultiplier)
                       .Returns(multiplier);
 

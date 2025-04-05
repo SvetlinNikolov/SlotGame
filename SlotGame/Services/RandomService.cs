@@ -14,4 +14,9 @@ public class RandomService : IRandomService
         int random = RandomNumberGenerator.GetInt32(rangeMin, rangeMax + 1);
         return random / (decimal)scale;
     }
+
+    public int GetRandomInt(int min, int max)
+    {
+        return RandomNumberGenerator.GetInt32(min, max + 1);
+    }
 }
