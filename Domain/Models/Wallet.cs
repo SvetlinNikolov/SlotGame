@@ -13,27 +13,32 @@ public class Wallet(Guid playerId)
 
     public Result Deposit(decimal amount)
     {
+        amount = Math.Round(amount, 2, MidpointRounding.ToZero);
+
         if (amount <= 0)
         {
             return Result.Failure(SlotGameErrors.InvalidDepositAmount());
         }
 
         Balance += amount;
-        return Result.Success($"Your deposit of ${amount} was successful. Your current balance is: ${Balance}");
+        return Result.Success($"Your deposit of ${amount:F2} was successful. Your current balance is: ${Balance:F2}");
     }
 
-    public Result Withdrawal(decimal amount)
+    public Result Withdraw(decimal amount)
     {
+        amount = Math.Round(amount, 2, MidpointRounding.ToZero);
+
         if (amount <= 0)
         {
-            return Result.Failure(SlotGameErrors.InvalidWithdrawalAmount());
+            return Result.Failure(SlotGameErrors.InvalidWithdrawAmount());
         }
+
         if (Balance - amount < 0)
         {
             return Result.Failure(SlotGameErrors.InsufficientBalance());
         }
 
         Balance -= amount;
-        return Result.Success($"Your withdrawal of ${amount} was successful. Your current balance is: ${Balance}");
+        return Result.Success($"Your withdraw of ${amount} was successful. Your current balance is: ${Balance:F2}");
     }
 }

@@ -1,13 +1,12 @@
 ﻿using SlotGame.Domain.Models;
 using SlotGame.Enums;
-using SlotGame.Factories;
 using SlotGame.Factories.Contracts;
 using SlotGame.Helpers;
 using SlotGame.Services.Contracts;
 
 namespace SlotGame.Services
 {
-    public class GameService(IWalletFactory walletFactory, IPlayerFactory playerFactory) : IGameService
+    public class GameService(IWalletFactory walletFactory, IPlayerFactory playerFactory, ISlotMachineService slotMachineService) : IGameService
     {
         public void Run()
         {
@@ -21,8 +20,11 @@ namespace SlotGame.Services
             }
 
             var wallet = walletResult.GetData<Wallet>();
+            RunMainLoop(wallet);
+        }
 
-            // Main loop
+        private void RunMainLoop(Wallet wallet)
+        {
             while (true)
             {
                 ConsoleHelper.PrintInfo("Please, submit action:");
@@ -30,32 +32,71 @@ namespace SlotGame.Services
 
                 if (arg is null && action is not GameAction.Exit)
                 {
-                    ConsoleHelper.PrintError("This action requires an amount.");
+                    ConsoleHelper.PrintError("Invalid action!");
                     continue;
                 }
 
-                switch (action)
-                {
-                    case GameAction.Deposit:
-                        var depositResult = wallet.Deposit(arg.Value); // not good value call.
-                        if (depositResult.IsFailure)
-                        {
-                            ConsoleHelper.PrintError(depositResult.Error!);
-                            continue;
-                        }
-                        ConsoleHelper.PrintInfo(depositResult.GetData<string>());
-                        break;
-                    case GameAction.Withdraw:
-                        var withdrawalResult = wallet.Withdrawal(arg.Value);
-                        if (withdrawalResult.IsFailure)
-                        {
-                            ConsoleHelper.PrintError(withdrawalResult.Error!);
-                            continue;
-                        }
-                        ConsoleHelper.PrintInfo(withdrawalResult.GetData<string>());
-                        break;
-                }
+                ExecuteAction(action, arg, wallet);
             }
+        }
+
+        private void ExecuteAction(GameAction action, decimal? arg, Wallet wallet)
+        {
+            switch (action)
+            {
+                case GameAction.Deposit:
+                    HandleDeposit(wallet, arg!.Value);
+                    break;
+
+                case GameAction.Withdraw:
+                    HandleWithdraw(wallet, arg!.Value);
+                    break;
+
+                case GameAction.Bet:
+                    HandleBet(wallet, arg!.Value);
+                    break;
+
+                case GameAction.Exit:
+                    ConsoleHelper.PrintInfo("Thank you for playing! Hope to see you again soon.");
+                    Environment.Exit(0);
+                    break;
+            }
+        }
+
+        private void HandleDeposit(Wallet wallet, decimal amount)
+        {
+            var depositResult = wallet.Deposit(amount);
+            if (depositResult.IsFailure)
+            {
+                ConsoleHelper.PrintError(depositResult.Error!);
+                return;
+            }
+
+            ConsoleHelper.PrintInfo(depositResult.GetData<string>());
+        }
+
+        private void HandleWithdraw(Wallet wallet, decimal amount)
+        {
+            var withdrawResult = wallet.Withdraw(amount);
+            if (withdrawResult.IsFailure)
+            {
+                ConsoleHelper.PrintError(withdrawResult.Error!);
+                return;
+            }
+
+            ConsoleHelper.PrintInfo(withdrawResult.GetData<string>());
+        }
+
+        private void HandleBet(Wallet wallet, decimal amount)
+        {
+            var spinResult = slotMachineService.Spin(wallet, amount);
+            if (spinResult.IsFailure)
+            {
+                ConsoleHelper.PrintError(spinResult.Error!);
+                return;
+            }
+
+            ConsoleHelper.PrintInfo(spinResult.GetData<string>());
         }
     }
 }
