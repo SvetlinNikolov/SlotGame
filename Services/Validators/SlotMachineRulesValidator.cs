@@ -1,4 +1,5 @@
 ﻿using SlotGame.Domain.Constants;
+using SlotGame.Enums;
 
 namespace SlotGame.Services.Validators;
 
@@ -6,11 +7,22 @@ public static class SlotMachineRulesValidator
 {
     public static void ValidateGamePercentages()
     {
-        int total = GamePercentageConfig.GamePercentages.Select(x => x.percent).Sum();
+        var percentages = GamePercentageConfig.GamePercentages;
 
-        if (total != GlobalConstants.TotalPercent)
+        if (percentages.Sum(x => x.percent) != GlobalConstants.TotalPercent)
         {
-            throw new InvalidOperationException($"Config Error: Game percentages must total {GlobalConstants.TotalPercent}%, but got {total}%.");
+            throw new InvalidOperationException($"Config Error: Game percentages must total {GlobalConstants.TotalPercent}%.");
+
+        }
+
+        var expectedOrder = new[] { SpinOutcome.Loss, SpinOutcome.Win, SpinOutcome.BigWin };
+
+        for (int i = 0; i < expectedOrder.Length; i++)
+        {
+            if (percentages[i].outcome != expectedOrder[i])
+            {
+                throw new InvalidOperationException("Config Error: GamePercentages must be ordered as Loss → Win → BigWin.");
+            }
         }
     }
 }
