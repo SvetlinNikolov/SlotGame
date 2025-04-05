@@ -21,11 +21,6 @@ public class Result
         return new Result(isSuccess: true, data);
     }
 
-    public static Result Success()
-    {
-        return new Result(isSuccess: true);
-    }
-
     public static Result Failure(Error error)
     {
         return new Result(isSuccess: false, data: null, error);

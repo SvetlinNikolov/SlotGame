@@ -21,8 +21,8 @@ public class SlotMachineServiceTests
     }
 
     [Theory]
-    [InlineData(GlobalConstants.MinBet - 1)]
-    [InlineData(GlobalConstants.MaxBet + 1)]
+    [InlineData(BetConstants.MinBet - 1)]
+    [InlineData(BetConstants.MaxBet + 1)]
     public void Spin_ShouldFail_WhenBetIsBelowMinimumOrAboveMaximum(decimal bet)
     {
         // Arrange

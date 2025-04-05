@@ -9,9 +9,9 @@ public static class SlotMachineRulesValidator
     {
         var percentages = GamePercentageConfig.GamePercentages;
 
-        if (percentages.Sum(x => x.percent) != GlobalConstants.TotalPercent)
+        if (percentages.Sum(x => x.percent) != BetConstants.TotalPercent)
         {
-            throw new InvalidOperationException($"Config Error: Game percentages must total {GlobalConstants.TotalPercent}%.");
+            throw new InvalidOperationException($"Config Error: Game percentages must total {BetConstants.TotalPercent}%.");
 
         }
 

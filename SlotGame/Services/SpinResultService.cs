@@ -7,18 +7,11 @@ using SlotGame.Domain.Result;
 using SlotGame.Enums;
 using SlotGame.Services.Contracts;
 
-public class SpinResultService : ISpinResultService
+public class SpinResultService(IRandomService randomService) : ISpinResultService
 {
-    private readonly IRandomService _randomService;
-
-    public SpinResultService(IRandomService randomService)
-    {
-        _randomService = randomService;
-    }
-
     public Result GetSpinResult(decimal betAmount)
     {
-        if (betAmount < GlobalConstants.MinBet || betAmount > GlobalConstants.MaxBet)
+        if (betAmount < BetConstants.MinBet || betAmount > BetConstants.MaxBet)
         {
             return Result.Failure(SlotGameErrors.BetAmountNotInValidRange());
         }
@@ -34,8 +27,8 @@ public class SpinResultService : ISpinResultService
         var multiplier = spinOutcome switch
         {
             SpinOutcome.Loss => 0,
-            SpinOutcome.Win => _randomService.GetRandomDecimal(GlobalConstants.BaseWinMinMultiplier, GlobalConstants.BaseWinMaxMultiplier),
-            SpinOutcome.BigWin => _randomService.GetRandomDecimal(GlobalConstants.BigWinMinMultiplier, GlobalConstants.BigWinMaxMultiplier),
+            SpinOutcome.Win => randomService.GetRandomDecimal(BetConstants.BaseWinMinMultiplier, BetConstants.BaseWinMaxMultiplier),
+            SpinOutcome.BigWin => randomService.GetRandomDecimal(BetConstants.BigWinMinMultiplier, BetConstants.BigWinMaxMultiplier),
             _ => 0,
         };
 
@@ -45,7 +38,7 @@ public class SpinResultService : ISpinResultService
 
     private Result CalculateSpinOutcome()
     {
-        var roll = _randomService.GetRandomDecimal(1, GlobalConstants.TotalPercent);
+        var roll = randomService.GetRandomDecimal(1, BetConstants.TotalPercent);
         int cumulative = 0;
 
         foreach (var (outcome, percent) in GamePercentageConfig.GamePercentages)

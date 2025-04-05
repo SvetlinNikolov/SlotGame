@@ -5,8 +5,6 @@ using SlotGame.Domain.Errors;
 
 public class Wallet(Guid playerId)
 {
-    public Guid Id { get; } = Guid.NewGuid();
-
     public Guid PlayerId { get; } = playerId;
 
     public decimal Balance { get; private set; }

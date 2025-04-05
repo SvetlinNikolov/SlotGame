@@ -26,18 +26,18 @@ public class SpinResultServiceTests
      decimal roll, SpinOutcome expectedOutcome, decimal multiplier, decimal betAmount, decimal expectedTotalWin)
     {
         // Arange
-        _randomService.GetRandomDecimal(1, GlobalConstants.TotalPercent).Returns(roll);
+        _randomService.GetRandomDecimal(1, BetConstants.TotalPercent).Returns(roll);
 
         if (expectedOutcome == SpinOutcome.Win)
         {
             _randomService
-                .GetRandomDecimal(GlobalConstants.BaseWinMinMultiplier, GlobalConstants.BaseWinMaxMultiplier)
+                .GetRandomDecimal(BetConstants.BaseWinMinMultiplier, BetConstants.BaseWinMaxMultiplier)
                 .Returns(multiplier);
         }
         else if (expectedOutcome == SpinOutcome.BigWin)
         {
             _randomService
-                .GetRandomDecimal(GlobalConstants.BigWinMinMultiplier, GlobalConstants.BigWinMaxMultiplier)
+                .GetRandomDecimal(BetConstants.BigWinMinMultiplier, BetConstants.BigWinMaxMultiplier)
                 .Returns(multiplier);
         }
 
@@ -59,8 +59,8 @@ public class SpinResultServiceTests
     public void GetSpinResult_ShouldReturnFailure_WhenRollIsOutsideRange()
     {
         // Arange
-        _randomService.GetRandomDecimal(1, GlobalConstants.TotalPercent)
-            .Returns(GlobalConstants.TotalPercent + 1); // invalid roll
+        _randomService.GetRandomDecimal(1, BetConstants.TotalPercent)
+            .Returns(BetConstants.TotalPercent + 1); // invalid roll
 
         // Act
         var result = _service.GetSpinResult(10);
@@ -71,8 +71,8 @@ public class SpinResultServiceTests
     }
 
     [Theory]
-    [InlineData(GlobalConstants.MinBet - 1)]
-    [InlineData(GlobalConstants.MaxBet + 1)]
+    [InlineData(BetConstants.MinBet - 1)]
+    [InlineData(BetConstants.MaxBet + 1)]
     public void GetSpinResult_ShouldReturnFailure_WhenBetAmountIsOutOfRange(decimal invalidBet)
     {
         // Act

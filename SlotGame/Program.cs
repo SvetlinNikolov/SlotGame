@@ -20,6 +20,7 @@ public class Program
             .AddSingleton<ISpinResultService, SpinResultService>()
             .AddSingleton<ISlotMachineService, SlotMachineService>()
             .AddSingleton<IRandomService, RandomService>()
+            .AddSingleton<IConsoleService, ConsoleService>()
             .BuildServiceProvider();
 
         var game = serviceProvider.GetRequiredService<IGameService>();

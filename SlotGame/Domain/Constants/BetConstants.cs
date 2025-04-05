@@ -1,6 +1,6 @@
 ﻿namespace SlotGame.Domain.Constants;
 
-public static class GlobalConstants
+public static class BetConstants
 {
     public const int MinBet = 1;
     public const int MaxBet = 10;

@@ -6,7 +6,7 @@ using SlotGame.Services.Contracts;
 
 namespace SlotGame.Services
 {
-    public class GameService(IWalletFactory walletFactory, IPlayerFactory playerFactory, ISlotMachineService slotMachineService) : IGameService
+    public class GameService(IWalletFactory walletFactory, IPlayerFactory playerFactory, ISlotMachineService slotMachineService, IConsoleService consoleService) : IGameService
     {
         public void Run()
         {
@@ -15,7 +15,7 @@ namespace SlotGame.Services
 
             if (walletResult.IsFailure)
             {
-                ConsoleHelper.PrintError(walletResult.Error!);
+                consoleService.PrintError(walletResult.Error!);
                 return;
             }
 
@@ -23,16 +23,21 @@ namespace SlotGame.Services
             RunMainLoop(wallet);
         }
 
+        public void Exit()
+        {
+            Environment.Exit(0);
+        }
+
         private void RunMainLoop(Wallet wallet)
         {
             while (true)
             {
-                ConsoleHelper.PrintInfo("Please, submit action:");
-                var (action, arg) = ActionHelper.Parse(Console.ReadLine())!.Value;
+                consoleService.PrintInfo("Please, submit action:");
+                var (action, arg) = ActionHelper.Parse(consoleService.ReadLine())!.Value;
 
                 if (arg is null && action is not GameAction.Exit)
                 {
-                    ConsoleHelper.PrintError("Invalid action!");
+                    consoleService.PrintError("Invalid action!");
                     continue;
                 }
 
@@ -57,8 +62,8 @@ namespace SlotGame.Services
                     break;
 
                 case GameAction.Exit:
-                    ConsoleHelper.PrintInfo("Thank you for playing! Hope to see you again soon.");
-                    Environment.Exit(0);
+                    consoleService.PrintInfo("Thank you for playing! Hope to see you again soon.");
+                    Exit();
                     break;
             }
         }
@@ -68,11 +73,11 @@ namespace SlotGame.Services
             var depositResult = wallet.Deposit(amount);
             if (depositResult.IsFailure)
             {
-                ConsoleHelper.PrintError(depositResult.Error!);
+                consoleService.PrintError(depositResult.Error!);
                 return;
             }
 
-            ConsoleHelper.PrintInfo(depositResult.GetData<string>());
+            consoleService.PrintInfo(depositResult.GetData<string>());
         }
 
         private void HandleWithdraw(Wallet wallet, decimal amount)
@@ -80,11 +85,11 @@ namespace SlotGame.Services
             var withdrawResult = wallet.Withdraw(amount);
             if (withdrawResult.IsFailure)
             {
-                ConsoleHelper.PrintError(withdrawResult.Error!);
+                consoleService.PrintError(withdrawResult.Error!);
                 return;
             }
 
-            ConsoleHelper.PrintInfo(withdrawResult.GetData<string>());
+            consoleService.PrintInfo(withdrawResult.GetData<string>());
         }
 
         private void HandleBet(Wallet wallet, decimal amount)
@@ -92,11 +97,11 @@ namespace SlotGame.Services
             var spinResult = slotMachineService.Spin(wallet, amount);
             if (spinResult.IsFailure)
             {
-                ConsoleHelper.PrintError(spinResult.Error!);
+                consoleService.PrintError(spinResult.Error!);
                 return;
             }
 
-            ConsoleHelper.PrintInfo(spinResult.GetData<string>());
+            consoleService.PrintInfo(spinResult.GetData<string>());
         }
     }
 }

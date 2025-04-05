@@ -11,7 +11,7 @@ public class SlotMachineService(ISpinResultService spinResultService) : ISlotMac
 {
     public Result Spin(Wallet wallet, decimal betAmount)
     {
-        if (betAmount < GlobalConstants.MinBet || betAmount > GlobalConstants.MaxBet)
+        if (betAmount < BetConstants.MinBet || betAmount > BetConstants.MaxBet)
         {
             return Result.Failure(SlotGameErrors.BetAmountNotInValidRange());
         }

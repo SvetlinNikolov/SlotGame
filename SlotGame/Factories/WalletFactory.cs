@@ -7,7 +7,7 @@ namespace SlotGame.Factories
 {
     public class WalletFactory : IWalletFactory
     {
-        private readonly Dictionary<Guid, Wallet> _walletsByPlayerId = new();
+        private readonly Dictionary<Guid, Wallet> _walletsByPlayerId = [];
 
         public Result CreateWallet(Guid playerId)
         {

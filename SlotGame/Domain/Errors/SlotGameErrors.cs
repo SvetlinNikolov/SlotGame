@@ -1,5 +1,4 @@
 ﻿using SlotGame.Domain.Constants;
-using System;
 
 namespace SlotGame.Domain.Errors
 {
@@ -18,7 +17,7 @@ namespace SlotGame.Domain.Errors
             => new("Insufficient balance");
 
         public static Error BetAmountNotInValidRange()
-           => new($"Bet amount must be between ${GlobalConstants.MinBet} and ${GlobalConstants.MaxBet}");
+           => new($"Bet amount must be between ${BetConstants.MinBet} and ${BetConstants.MaxBet}");
 
         public static Error UnknownSpinResult()
           => new($"Spin result could not be determined.");
