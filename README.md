@@ -77,7 +77,7 @@ RTP (Return to Player): 101.92%
 
 ## Technologies Used
 
-- .NET 8 / C# 12
+- .NET 9
 - xUnit
 - NSubstitute
 - Microsoft.Extensions.DependencyInjection
