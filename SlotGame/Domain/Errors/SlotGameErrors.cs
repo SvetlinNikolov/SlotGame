@@ -21,5 +21,8 @@ namespace SlotGame.Domain.Errors
 
         public static Error UnknownSpinResult()
           => new($"Spin result could not be determined.");
+
+        public static Error InvalidCommand()
+         => new($"Invalid command. Use: deposit <amount>, withdraw <amount>, bet <amount>, or exit.");
     }
 }

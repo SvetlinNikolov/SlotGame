@@ -1,4 +1,5 @@
-﻿using SlotGame.Domain.Models;
+﻿using SlotGame.Domain.Errors;
+using SlotGame.Domain.Models;
 using SlotGame.Enums;
 using SlotGame.Factories.Contracts;
 using SlotGame.Helpers;
@@ -37,7 +38,7 @@ namespace SlotGame.Services
 
                 if (arg is null && action is not GameAction.Exit)
                 {
-                    consoleService.PrintError("Invalid action!");
+                    consoleService.PrintError(SlotGameErrors.InvalidCommand());
                     continue;
                 }
 
