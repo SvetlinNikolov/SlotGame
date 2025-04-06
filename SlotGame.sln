@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}")  "SlotGame", "SlotGame\SlotGame.csproj", "{07CBA622-60F5-4379-97F5-16BA3FD3DB3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlotGame", "SlotGame\SlotGame.csproj", "{07CBA622-60F5-4379-97F5-16BA3FD3DB3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlotGame.UnitTests", "SlotGame.UnitTests\SlotGame.UnitTests.csproj", "{B205F822-074A-49D6-A3AB-376AD4529B25}"
 EndProject
