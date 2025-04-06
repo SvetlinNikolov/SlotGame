@@ -32,12 +32,12 @@ public class SlotMachineService(ISpinResultService spinResultService) : ISlotMac
         }
 
         var spinData = spinResult.GetData<SpinResult>();
-        wallet.Deposit(spinData.TotalWin);
 
-        var message = spinData.SpinOutcome == SpinOutcome.Win || spinData.SpinOutcome == SpinOutcome.BigWin
-            ? $"Congrats - you won ${spinData.TotalWin:F2}! Your current balance is: ${wallet.Balance:F2}"
-            : $"No luck this time! Your current balance is: ${wallet.Balance:F2}";
+        if (spinData.SpinOutcome is SpinOutcome.Win or SpinOutcome.BigWin)
+        {
+            wallet.Deposit(spinData.TotalWin);
+        }
 
-        return Result.Success(message);
+        return Result.Success(spinData);
     }
 }

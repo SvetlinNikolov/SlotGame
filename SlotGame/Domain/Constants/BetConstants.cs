@@ -13,6 +13,6 @@ public static class BetConstants
     public const decimal BaseWinMinMultiplier = 0.1m; // chosen as the min multiplier for a win
     public const decimal BaseWinMaxMultiplier = 2.0m;
 
-    public const int BigWinMinMultiplier = 2;
-    public const int BigWinMaxMultiplier = 10;
+    public const decimal BigWinMinMultiplier = 2;
+    public const decimal BigWinMaxMultiplier = 10;
 }

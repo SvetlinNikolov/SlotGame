@@ -19,15 +19,14 @@ public class SpinResultServiceTests
     }
 
     [Theory]
-    [InlineData(1.0, SpinOutcome.Loss, 0.0, 5.0, 0.0)]
-    [InlineData(51.0, SpinOutcome.Win, 1.5, 10.0, 15.0)]
-    [InlineData(91.0, SpinOutcome.BigWin, 2.5, 4.0, 10.0)]
+    [InlineData(1, SpinOutcome.Loss, 0.0, 5.0, 0.0)]
+    [InlineData(51, SpinOutcome.Win, 1.5, 10.0, 15.0)]
+    [InlineData(91, SpinOutcome.BigWin, 2.5, 4.0, 10.0)]
     public void GetSpinResult_ShouldReturnCorrectOutcome(
-     decimal roll, SpinOutcome expectedOutcome, decimal multiplier, decimal betAmount, decimal expectedTotalWin)
+     int roll, SpinOutcome expectedOutcome, decimal multiplier, decimal betAmount, decimal expectedTotalWin)
     {
         // Arange
-        _randomService.GetRandomDecimal(1, BetConstants.TotalPercent).Returns(roll);
-
+        _randomService.GetRandomInt(1, BetConstants.TotalPercent).Returns(roll);
         if (expectedOutcome == SpinOutcome.Win)
         {
             _randomService

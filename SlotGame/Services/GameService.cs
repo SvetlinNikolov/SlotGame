@@ -5,104 +5,113 @@ using SlotGame.Factories.Contracts;
 using SlotGame.Helpers;
 using SlotGame.Services.Contracts;
 
-namespace SlotGame.Services
+namespace SlotGame.Services;
+
+public class GameService(IWalletFactory walletFactory, IPlayerFactory playerFactory, ISlotMachineService slotMachineService, IConsoleService consoleService, IApplicationControl applicationControl) : IGameService
 {
-    public class GameService(IWalletFactory walletFactory, IPlayerFactory playerFactory, ISlotMachineService slotMachineService, IConsoleService consoleService) : IGameService
+    public void Run()
     {
-        public void Run()
-        {
-            var player = playerFactory.CreatePlayer();
-            var walletResult = walletFactory.CreateWallet(player.Id);
+        var player = playerFactory.CreatePlayer();
+        var walletResult = walletFactory.CreateWallet(player.Id);
 
-            if (walletResult.IsFailure)
+        if (walletResult.IsFailure)
+        {
+            consoleService.PrintError(walletResult.Error!);
+            return;
+        }
+
+        var wallet = walletResult.GetData<Wallet>();
+
+        RunMainLoop(wallet);
+        Exit();
+    }
+
+    public void Exit()
+    {
+        applicationControl.Exit();
+    }
+
+    private void RunMainLoop(Wallet wallet)
+    {
+        while (true)
+        {
+            consoleService.PrintInfo("Please, submit action:");
+            var (action, arg) = ActionHelper.Parse(consoleService.ReadLine())!.Value;
+
+            if (arg is null && action is not GameAction.Exit)
             {
-                consoleService.PrintError(walletResult.Error!);
+                consoleService.PrintError(SlotGameErrors.InvalidCommand());
+                continue;
+            }
+            if (action == GameAction.Exit)
+            {
                 return;
             }
-
-            var wallet = walletResult.GetData<Wallet>();
-            RunMainLoop(wallet);
+            ExecuteAction(action, arg, wallet);
         }
+    }
 
-        public void Exit()
+    private void ExecuteAction(GameAction action, decimal? arg, Wallet wallet)
+    {
+        switch (action)
         {
-            Environment.Exit(0);
-        }
+            case GameAction.Deposit:
+                HandleDeposit(wallet, arg!.Value);
+                break;
 
-        private void RunMainLoop(Wallet wallet)
+            case GameAction.Withdraw:
+                HandleWithdraw(wallet, arg!.Value);
+                break;
+
+            case GameAction.Bet:
+                HandleBet(wallet, arg!.Value);
+                break;
+
+            case GameAction.Exit:
+                consoleService.PrintInfo("Thank you for playing! Hope to see you again soon.");
+                Exit();
+                break;
+        }
+    }
+
+    private void HandleDeposit(Wallet wallet, decimal amount)
+    {
+        var depositResult = wallet.Deposit(amount);
+        if (depositResult.IsFailure)
         {
-            while (true)
-            {
-                consoleService.PrintInfo("Please, submit action:");
-                var (action, arg) = ActionHelper.Parse(consoleService.ReadLine())!.Value;
-
-                if (arg is null && action is not GameAction.Exit)
-                {
-                    consoleService.PrintError(SlotGameErrors.InvalidCommand());
-                    continue;
-                }
-
-                ExecuteAction(action, arg, wallet);
-            }
+            consoleService.PrintError(depositResult.Error!);
+            return;
         }
 
-        private void ExecuteAction(GameAction action, decimal? arg, Wallet wallet)
+        consoleService.PrintInfo(depositResult.GetData<string>());
+    }
+
+    private void HandleWithdraw(Wallet wallet, decimal amount)
+    {
+        var withdrawResult = wallet.Withdraw(amount);
+        if (withdrawResult.IsFailure)
         {
-            switch (action)
-            {
-                case GameAction.Deposit:
-                    HandleDeposit(wallet, arg!.Value);
-                    break;
-
-                case GameAction.Withdraw:
-                    HandleWithdraw(wallet, arg!.Value);
-                    break;
-
-                case GameAction.Bet:
-                    HandleBet(wallet, arg!.Value);
-                    break;
-
-                case GameAction.Exit:
-                    consoleService.PrintInfo("Thank you for playing! Hope to see you again soon.");
-                    Exit();
-                    break;
-            }
+            consoleService.PrintError(withdrawResult.Error!);
+            return;
         }
 
-        private void HandleDeposit(Wallet wallet, decimal amount)
+        consoleService.PrintInfo(withdrawResult.GetData<string>());
+    }
+
+    private void HandleBet(Wallet wallet, decimal amount)
+    {
+        var spinResult = slotMachineService.Spin(wallet, amount);
+        if (spinResult.IsFailure)
         {
-            var depositResult = wallet.Deposit(amount);
-            if (depositResult.IsFailure)
-            {
-                consoleService.PrintError(depositResult.Error!);
-                return;
-            }
-
-            consoleService.PrintInfo(depositResult.GetData<string>());
+            consoleService.PrintError(spinResult.Error!);
+            return;
         }
+        var spinData = spinResult.GetData<SpinResult>();
 
-        private void HandleWithdraw(Wallet wallet, decimal amount)
-        {
-            var withdrawResult = wallet.Withdraw(amount);
-            if (withdrawResult.IsFailure)
-            {
-                consoleService.PrintError(withdrawResult.Error!);
-                return;
-            }
+        var message = spinData.SpinOutcome == SpinOutcome.Win || spinData.SpinOutcome == SpinOutcome.BigWin
+            ? $"Congrats - you won ${spinData.TotalWin:F2}! Your current balance is: ${wallet.Balance:F2}"
+            : $"No luck this time! Your current balance is: ${wallet.Balance:F2}";
 
-            consoleService.PrintInfo(withdrawResult.GetData<string>());
-        }
-
-        private void HandleBet(Wallet wallet, decimal amount)
-        {
-            var spinResult = slotMachineService.Spin(wallet, amount);
-            if (spinResult.IsFailure)
-            {
-                consoleService.PrintError(spinResult.Error!);
-                return;
-            }
-
-            consoleService.PrintInfo(spinResult.GetData<string>());
-        }
+        consoleService.PrintInfo(message);
     }
 }

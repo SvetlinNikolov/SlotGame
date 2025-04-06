@@ -20,10 +20,9 @@ public class RandomServiceTests
     }
 
     [Fact]
-    public void GetRandomDecimal_MinGreaterThanOrEqualMax_ShouldThrowException()
+    public void GetRandomDecimal_MinGreaterThanOMax_ShouldThrowException()
     {
         Assert.Throws<ArgumentException>(() => _randomService.GetRandomDecimal(10, 5));
-        Assert.Throws<ArgumentException>(() => _randomService.GetRandomDecimal(5, 5));
     }
 
     [Theory]

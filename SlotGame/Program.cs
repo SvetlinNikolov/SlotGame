@@ -21,6 +21,7 @@ public class Program
             .AddSingleton<ISlotMachineService, SlotMachineService>()
             .AddSingleton<IRandomService, RandomService>()
             .AddSingleton<IConsoleService, ConsoleService>()
+            .AddSingleton<IApplicationControl, ApplicationControl>()
             .BuildServiceProvider();
 
         var game = serviceProvider.GetRequiredService<IGameService>();
