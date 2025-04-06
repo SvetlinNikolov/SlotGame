@@ -8,16 +8,20 @@ using SlotGame.Domain.Result;
 using SlotGame.Enums;
 using SlotGame.Services;
 using SlotGame.Services.Contracts;
-using Xunit;
 
 public class SlotMachineServiceTests
 {
     private readonly ISpinResultService _spinResultService = Substitute.For<ISpinResultService>();
-    private readonly SlotMachineService _service;
+    private readonly SlotMachineService _slotMachineServiceMock;
+    private readonly SlotMachineService _slotMachineService;
 
     public SlotMachineServiceTests()
     {
-        _service = new SlotMachineService(_spinResultService);
+        _slotMachineServiceMock = new SlotMachineService(_spinResultService);
+
+        var randomService = Substitute.For<IRandomService>();
+        var realSpinService = new SpinResultService(randomService);
+        _slotMachineService = new SlotMachineService(realSpinService);
     }
 
     [Theory]
@@ -27,9 +31,10 @@ public class SlotMachineServiceTests
     {
         // Arrange
         var wallet = new Wallet(Guid.NewGuid());
+        wallet.Deposit(100);
 
         // Act
-        var result = _service.Spin(wallet, bet);
+        var result = _slotMachineService.Spin(wallet, bet);
 
         // Assert
         Assert.True(result.IsFailure);
@@ -39,14 +44,11 @@ public class SlotMachineServiceTests
     [Fact]
     public void Spin_ShouldFail_WhenWithdrawalFails()
     {
-        // Arrange
         var wallet = new Wallet(Guid.NewGuid());
         var betAmount = 5;
 
-        // Act
-        var result = _service.Spin(wallet, betAmount);
+        var result = _slotMachineServiceMock.Spin(wallet, betAmount);
 
-        // Assert
         Assert.True(result.IsFailure);
         Assert.Equal(SlotGameErrors.InsufficientBalance().Message, result.Error?.Message);
     }
@@ -54,17 +56,14 @@ public class SlotMachineServiceTests
     [Fact]
     public void Spin_ShouldRefund_WhenSpinFails()
     {
-        // Arrange
         var wallet = new Wallet(Guid.NewGuid());
         var depositAmount = 645;
         var betAmount = 5;
         wallet.Deposit(depositAmount);
         _spinResultService.GetSpinResult(betAmount).Returns(Result.Failure(SlotGameErrors.UnknownSpinResult()));
 
-        // Act
-        var result = _service.Spin(wallet, betAmount);
+        var result = _slotMachineServiceMock.Spin(wallet, betAmount);
 
-        // Assert
         Assert.True(result.IsFailure);
         Assert.Equal(depositAmount, wallet.Balance);
     }
@@ -72,7 +71,6 @@ public class SlotMachineServiceTests
     [Fact]
     public void Spin_ShouldSucceed_Loss()
     {
-        // Arrange
         var wallet = new Wallet(Guid.NewGuid());
         var depositAmount = 21;
         var betAmount = 8;
@@ -83,10 +81,8 @@ public class SlotMachineServiceTests
         var spin = new SpinResult(SpinOutcome.Loss, betAmount, multiplier);
         _spinResultService.GetSpinResult(betAmount).Returns(Result.Success(spin));
 
-        // Act
-        var result = _service.Spin(wallet, betAmount);
+        var result = _slotMachineServiceMock.Spin(wallet, betAmount);
 
-        // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal(expectedBalance, wallet.Balance);
     }
@@ -94,7 +90,6 @@ public class SlotMachineServiceTests
     [Fact]
     public void Spin_ShouldSucceed_OnWin()
     {
-        // Arrange
         var wallet = new Wallet(Guid.NewGuid());
         var depositAmount = 44;
         var betAmount = 2;
@@ -105,10 +100,8 @@ public class SlotMachineServiceTests
         var spin = new SpinResult(SpinOutcome.Win, betAmount, multiplier);
         _spinResultService.GetSpinResult(betAmount).Returns(Result.Success(spin));
 
-        // Act
-        var result = _service.Spin(wallet, betAmount);
+        var result = _slotMachineServiceMock.Spin(wallet, betAmount);
 
-        // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal(expectedBalance, wallet.Balance);
     }
@@ -116,7 +109,6 @@ public class SlotMachineServiceTests
     [Fact]
     public void Spin_ShouldSucceed_OnBigWin()
     {
-        // Arrange
         var wallet = new Wallet(Guid.NewGuid());
         var depositAmount = 10;
         var betAmount = 5;
@@ -127,10 +119,8 @@ public class SlotMachineServiceTests
         var spin = new SpinResult(SpinOutcome.BigWin, betAmount, multiplier);
         _spinResultService.GetSpinResult(betAmount).Returns(Result.Success(spin));
 
-        // Act
-        var result = _service.Spin(wallet, betAmount);
+        var result = _slotMachineServiceMock.Spin(wallet, betAmount);
 
-        // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal(expectedBalance, wallet.Balance);
     }

@@ -28,6 +28,7 @@ public class GameService(IWalletFactory walletFactory, IPlayerFactory playerFact
 
     public void Exit()
     {
+        consoleService.PrintInfo("Thank you for playing! Hope to see you again soon.");
         applicationControl.Exit();
     }
 
@@ -65,11 +66,6 @@ public class GameService(IWalletFactory walletFactory, IPlayerFactory playerFact
 
             case GameAction.Bet:
                 HandleBet(wallet, arg!.Value);
-                break;
-
-            case GameAction.Exit:
-                consoleService.PrintInfo("Thank you for playing! Hope to see you again soon.");
-                Exit();
                 break;
         }
     }
