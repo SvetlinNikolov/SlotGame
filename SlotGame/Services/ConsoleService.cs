@@ -17,7 +17,7 @@ public class ConsoleService : IConsoleService
         PrintError(error.Message);
     }
 
-    public void PrintInfo(string message)
+    public void PrintInfo(string? message = null)
     {
         Console.WriteLine(message);
     }

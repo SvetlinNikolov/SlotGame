@@ -4,7 +4,7 @@ namespace SlotGame.Services.Contracts;
 
 public interface IConsoleService
 {
-    void PrintInfo(string message);
+    void PrintInfo(string? message = null);
     void PrintError(string message);
     void PrintError(Error error);
     string? ReadLine();

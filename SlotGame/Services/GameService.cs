@@ -49,6 +49,7 @@ public class GameService(IWalletFactory walletFactory, IPlayerFactory playerFact
                 return;
             }
             ExecuteAction(action, arg, wallet);
+            consoleService.PrintInfo();
         }
     }
 
